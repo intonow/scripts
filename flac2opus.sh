@@ -47,3 +47,13 @@ copy_transcode() {
 		echo "entering into the folder $file_name" && cd "$file_path"
 		"$script_dir"/flac2opus.sh "$dest_path" 
 		cd "$init_dir"
+
+	else
+		cp "$file_path" "$dest_path"
+		echo "copied $file_name"
+	fi
+}
+
+navigate
+
+rm ~/.flac2opus.temp
