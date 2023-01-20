@@ -9,39 +9,41 @@
 # using a function is kinda useless ?
 
 
-# please change it to your directory
-script_dir=~/Music/0_FLAC
+if [ -f "~/.flac2opus.temp"] ; then
+	script_dir=$(cat ~/.flac2opus.temp)
+else
+	script_dir="$0"
+	echo "$script_dir" > ~/.flac2opus.temp
+fi
 
-init_dir="$(pwd)"
+init_dir="$0"
 dest_dir="$1"
 
 
 navigate() {
 	for file_name in *
 	do
-		file_ext=${file_name: -4}
-		file_path="$init_dir"/"$file_name"
 		dest_path="$dest_dir"/"$file_name"
-		
-		if [ "$file_ext" = "flac" ]
-		then
-			opusenc "$file_path" "${dest_path%.*}.opus"
-			echo "file $file_name converted"
 
-		elif [ -d "$file_path" ]
-		then
-			mkdir "$dest_path"
-			echo "entering into the folder $file_name" && cd "$file_path"
-			"$script_dir"/flac2opus.sh "$dest_path" 
-			cd "$init_dir"
-
+		if [ -f "$dest_path"] ; then
+			echo "$dest_path already exists"
 		else
-			cp "$file_path" "$dest_path"
-			echo "copied $file_name"
+			file_ext=${file_name: -4}
+			file_path="$init_dir"/"$file_name"
+			copy_transcode
 		fi
-
 	done
 }
 
+copy_transcode() {
+	if [ "$file_ext" = "flac" ]
+	then
+		opusenc "$file_path" "${dest_path%.*}.opus"
+		echo "file $file_name converted"
 
-navigate
+	elif [ -d "$file_path" ]
+	then
+		mkdir "$dest_path"
+		echo "entering into the folder $file_name" && cd "$file_path"
+		"$script_dir"/flac2opus.sh "$dest_path" 
+		cd "$init_dir"
