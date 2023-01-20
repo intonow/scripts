@@ -8,15 +8,17 @@
 # using the file utility would be better than the end of the name to detect the file type.
 # using a function is kinda useless ?
 
+# be extremely wary of spaces with square/test brackets 
 
-if [ -f "~/.flac2opus.temp"] ; then
-	script_dir=$(cat ~/.flac2opus.temp)
+if [ -e "~/.flac2opus.temp" ] ; then
+	script=$(cat ~/.flac2opus.temp)
 else
-	script_dir="$0"
-	echo "$script_dir" > ~/.flac2opus.temp
+	[ -f "~/.flac2opus.temp" ] 
+	script="$0"
+	echo "$script" > ~/.flac2opus.temp
 fi
 
-init_dir="$0"
+init_dir="$(pwd)"
 dest_dir="$1"
 
 
@@ -25,7 +27,7 @@ navigate() {
 	do
 		dest_path="$dest_dir"/"$file_name"
 
-		if [ -f "$dest_path"] ; then
+		if [ -f "$dest_path" ] || [ -f "${dest_path%.*}.opus" ]; then
 			echo "$dest_path already exists"
 		else
 			file_ext=${file_name: -4}
@@ -36,24 +38,27 @@ navigate() {
 }
 
 copy_transcode() {
-	if [ "$file_ext" = "flac" ]
+	if [ -f "$file_path" ] && [ "$file_ext" = "flac" ]
 	then
 		opusenc "$file_path" "${dest_path%.*}.opus"
 		echo "file $file_name converted"
+		echo " "
 
 	elif [ -d "$file_path" ]
 	then
-		mkdir "$dest_path"
+		[ -d "$dest_path" ] || mkdir "$dest_path"
+		echo "〜〜〜〜〜〜"
 		echo "entering into the folder $file_name" && cd "$file_path"
-		"$script_dir"/flac2opus.sh "$dest_path" 
+		echo " "
+		"$script" "$dest_path" 
 		cd "$init_dir"
 
 	else
 		cp "$file_path" "$dest_path"
+		echo "〜〜〜〜〜〜"
 		echo "copied $file_name"
+		echo " "
 	fi
 }
 
 navigate
-
-rm ~/.flac2opus.temp
