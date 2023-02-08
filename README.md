@@ -9,3 +9,4 @@ mostly for treating and converting media, but there can be anything in here, rea
 - https://www.gnu.org/software/bash/manual/
 - https://stackoverflow.com/questions/10535985/how-to-remove-filename-prefix-with-a-posix-shell/25536935#25536935
 - https://linuxize.com/post/bash-check-if-file-exists/
+- https://steinbaugh.com/posts/posix.html
